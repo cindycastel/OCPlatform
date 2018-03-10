@@ -15,11 +15,17 @@ class AdvertController extends Controller
 
 {
 
-public function indexAction(){
+	public function indexAction(){
 
-$content = $this->get('templating')->render('OCPlatformBundle:Advert:index.html.twig', array('nom'=>'Cindy')) ; 
-	return new Response($content) ; 
-}
+	$content = $this->get('templating')->render('OCPlatformBundle:Advert:index.html.twig', array('nom'=>'Cindy')) ; 
+		return new Response($content) ; 
+	}
+
+	//consulation d'une annonce 
+	public function viewAction($id){
+
+		return new Response("Affichage de l'annonce d'id:" .$id) ; 
+	}
 
 }
 
