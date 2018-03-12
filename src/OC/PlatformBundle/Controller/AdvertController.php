@@ -66,7 +66,7 @@ class AdvertController extends Controller
 
 	public function deleteAction($id){
 
-		return $this->render('OCPlatformBundle:delete:edit.html.twig') ; 
+		return $this->render('OCPlatformBundle:delete:delete.html.twig') ; 
 	}
 
 }
