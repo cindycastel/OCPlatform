@@ -61,19 +61,28 @@ public function indexAction($page)
 	//consulation d'une annonce 
 	public function viewAction($id){
 
-		return $this->render('OCPlatformBundle:Advert:view.html.twig', array('id' => $id )) ; 
+    $advert = array(
+      'title'=> 'Recherche développeur Symfony',
+      'id'=>$id, 
+      'author'=> 'Cindy',
+      'content'=>' Nous recherchons un developpeur',
+      'date'=> new \Datetime()
+
+     ); 
+
+		return $this->render('OCPlatformBundle:Advert:view.html.twig', array('advert' => $advert )) ; 
 	}
 
 	//ajout d'une annonce 
 	public function addAction(Request $request){
 
-		if($request->isMethos('POST')){
+		/*if($request->isMethos('POST')){
 
 			$request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistré') ; 
 
 			return $this->redirectToRoute('oc_platform_view', array('id' => 5 )) ; 
 
-		}
+		}*/
 
 		return $this->render('OCPlatformBundle:Advert:add.html.twig') ; 
 
@@ -83,13 +92,23 @@ public function indexAction($page)
 	//edit d'une annonce 
 	public function editAction($id, Request $request){
 
-		if($request->isMethos('POST')){
+
+ $advert = array(
+      'title'=> 'Recherche développeur Symfony',
+      'id'=>$id, 
+      'author'=> 'Cindy',
+      'content'=>' Nous recherchons un developpeur',
+      'date'=> new \Datetime()
+
+     ); 
+
+		/*if($request->isMethos('POST')){
 			$request->getSession()->getFlashBag()->add('notice', 'Annonce bien modifié') ; 
 			return $this->redirectToRoute('oc_platform_view', array('id' => 5 )) ; 
 
-		}
+		}*/
 
-		return $this->render('OCPlatformBundle:Advert:edit.html.twig') ; 
+		  return $this->render('OCPlatformBundle:Advert:edit.html.twig', array('advert' => $advert )) ; 
 	}
 
 	// supression d'une annonce 
