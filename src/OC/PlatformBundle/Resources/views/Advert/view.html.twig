@@ -9,6 +9,14 @@ Lecture d'une annonce - {{ parent() }}
 
 {% block ocplatform_body %}
 
+
+{# On vérifie qu'une image soit bien associée à l'annonce #}
+{% if advert.image is not null %}
+  <img src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
+{% endif %}
+
+
+
   <h2>{{ advert.title }}</h2>
 
   <i> par {{ advert.author }} , le {{ advert.date|date('d/m/y') }} </i>
@@ -37,4 +45,16 @@ Lecture d'une annonce - {{ parent() }}
 	  </a>
   </p>
 
+
+   <h2>Candidature en cours </h2>
+
+
+   {% for application  in listApplications %}
+   <li> 
+			{{ application.getAuthor}}  : {{ application.getContent}}
+</li>
+		{% else %}
+
+			 Pas encore de candidature 
+		{% endfor %}
 {% endblock %}
