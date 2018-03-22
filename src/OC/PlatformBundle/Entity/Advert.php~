@@ -280,37 +280,4 @@ class Advert
     {
         return $this->categories;
     }
-
-    /**
-     * Add application.
-     *
-     * @param \OC\PlatformBundle\Entity\Application $application
-     *
-     * @return Advert
-     */
-   public function addApplication(Application $application)
-
-  {
-
-    $this->applications[] = $application;
-
-  }
-
-
-  public function removeApplication(Application $application)
-
-  {
-
-    $this->applications->removeElement($application);
-
-  }
-
-
-  public function getApplications()
-
-  {
-
-    return $this->applications;
-
-  }
 }

@@ -27,6 +27,43 @@ Lecture d'une annonce - {{ parent() }}
   </div>
 
 
+{% if listAdvertSkills|length > 0 %}
+
+  <div>
+
+    Cette annonce requiert les compétences suivantes :
+
+    <ul>
+
+      {% for advertSkill in listAdvertSkills %}
+
+        <li>{{ advertSkill.skill.name }} : niveau {{ advertSkill.level }}</li>
+
+      {% endfor %}
+
+    </ul>
+
+  </div>
+
+{% endif %}
+
+
+{% if not advert.categories.empty %}
+
+  <p>
+
+    Cette annonce est parue dans les catégories suivantes :
+
+    {% for category in advert.categories %}
+
+      {{ category.name }}{% if not loop.last %}, {% endif %}
+
+    {% endfor %}
+
+  </p>
+
+{% endif %}
+
 
   <p>
 	  <a href=" {{ path('oc_platform_home') }}" class="btn btn-default">
@@ -46,6 +83,9 @@ Lecture d'une annonce - {{ parent() }}
   </p>
 
 
+	
+
+
    <h2>Candidature en cours </h2>
 
 
@@ -56,5 +96,8 @@ Lecture d'une annonce - {{ parent() }}
 		{% else %}
 
 			 Pas encore de candidature 
-		{% endfor %}
+
+	{% endfor %}
+
+
 {% endblock %}

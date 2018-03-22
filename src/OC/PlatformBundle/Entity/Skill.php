@@ -1,5 +1,5 @@
 <?php
-// src/OC/PlatformBundle/Entity/Category.php
+// src/OC/PlatformBundle/Entity/Skill.php
 
 namespace OC\PlatformBundle\Entity;
 
@@ -7,8 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @ORM\Table(name="oc_skill")
  */
-class Category
+class Skill
 {
   /**
    * @ORM\Column(name="id", type="integer")
