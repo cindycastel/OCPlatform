@@ -8,6 +8,13 @@ use OC\PlatformBundle\Entity\Advert;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use OC\PlatformBundle\Form\AdvertType;
 
 class AdvertController extends Controller
 {
@@ -78,17 +85,34 @@ class AdvertController extends Controller
 
   public function addAction(Request $request)
   {
-    $em = $this->getDoctrine()->getManager();
+     $advert = new Advert();
 
-    // On ne sait toujours pas gérer le formulaire, patience cela vient dans la prochaine partie !
+    $form   = $this->get('form.factory')->create(AdvertType::class, $advert);
 
-    if ($request->isMethod('POST')) {
+
+    if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+
+      $em = $this->getDoctrine()->getManager();
+
+      $em->persist($advert);
+
+      $em->flush();
+
+
       $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
 
+
       return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
+
     }
 
-    return $this->render('OCPlatformBundle:Advert:add.html.twig');
+
+    return $this->render('OCPlatformBundle:Advert:add.html.twig', array(
+
+      'form' => $form->createView(),
+
+    ));
+
   }
 
   public function editAction($id, Request $request)
