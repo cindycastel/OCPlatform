@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="oc_image")
- * @ORM\Entity(repositoryClass="OC\PlatformBundle\Entity\ImageRepository")
+ * @ORM\Entity
  */
 class Image
 {
@@ -28,61 +28,43 @@ class Image
    */
   private $alt;
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+  /**
+   * @return int
+   */
+  public function getId()
+  {
+    return $this->id;
+  }
 
-    /**
-     * Set url.
-     *
-     * @param string $url
-     *
-     * @return Image
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
+  /**
+   * @param string $url
+   */
+  public function setUrl($url)
+  {
+    $this->url = $url;
+  }
 
-        return $this;
-    }
+  /**
+   * @return string
+   */
+  public function getUrl()
+  {
+    return $this->url;
+  }
 
-    /**
-     * Get url.
-     *
-     * @return string
-     */
-    public function getUrl()
-    {
-        return $this->url;
-    }
+  /**
+   * @param string $alt
+   */
+  public function setAlt($alt)
+  {
+    $this->alt = $alt;
+  }
 
-    /**
-     * Set alt.
-     *
-     * @param string $alt
-     *
-     * @return Image
-     */
-    public function setAlt($alt)
-    {
-        $this->alt = $alt;
-
-        return $this;
-    }
-
-    /**
-     * Get alt.
-     *
-     * @return string
-     */
-    public function getAlt()
-    {
-        return $this->alt;
-    }
+  /**
+   * @return string
+   */
+  public function getAlt()
+  {
+    return $this->alt;
+  }
 }

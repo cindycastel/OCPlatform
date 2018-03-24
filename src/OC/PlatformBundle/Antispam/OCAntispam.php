@@ -1,12 +1,10 @@
-<?php 
-
+<?php
 // src/OC/PlatformBundle/Antispam/OCAntispam.php
 
-namespace OC\PlatformBundle\Antispam ; 
+namespace OC\PlatformBundle\Antispam;
 
-
-class OCAntispam {
-
+class OCAntispam
+{
   private $mailer;
   private $locale;
   private $minLength;
@@ -28,9 +26,4 @@ class OCAntispam {
   {
     return strlen($text) < $this->minLength;
   }
-
-
-
 }
-
-?>
