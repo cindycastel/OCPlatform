@@ -35,7 +35,7 @@ public function indexAction($page)
     // Notre liste d'annonce en dur
     $listAdverts = array(
       array(
-        'title'   => 'Recherche développpeur Symfony',
+        'title'   => 'Recherche développpeur Symfony',        
         'id'      => 1,
         'author'  => 'Alexandre',
         'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
@@ -129,6 +129,10 @@ public function indexAction($page)
       // Et bien sûr, on persiste cette entité de relation, propriétaire des deux autres relations
       $em->persist($advertSkill);
     }
+
+
+    
+
 
     // Doctrine ne connait pas encore l'entité $advert. Si vous n'avez pas défini la relation AdvertSkill
     // avec un cascade persist (ce qui est le cas si vous avez utilisé mon code), alors on doit persister $advert
