@@ -5,16 +5,11 @@
 namespace OC\PlatformBundle\Controller;
 
 use OC\PlatformBundle\Entity\Advert;
+use OC\PlatformBundle\Form\AdvertEditType;
+use OC\PlatformBundle\Form\AdvertType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use OC\PlatformBundle\Form\AdvertType;
 
 class AdvertController extends Controller
 {
@@ -85,34 +80,22 @@ class AdvertController extends Controller
 
   public function addAction(Request $request)
   {
-     $advert = new Advert();
-
+    $advert = new Advert();
     $form   = $this->get('form.factory')->create(AdvertType::class, $advert);
 
-
     if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-
       $em = $this->getDoctrine()->getManager();
-
       $em->persist($advert);
-
       $em->flush();
-
 
       $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
 
-
       return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
-
     }
 
-
     return $this->render('OCPlatformBundle:Advert:add.html.twig', array(
-
       'form' => $form->createView(),
-
     ));
-
   }
 
   public function editAction($id, Request $request)
@@ -125,20 +108,24 @@ class AdvertController extends Controller
       throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
     }
 
-    // Ici encore, il faudra mettre la gestion du formulaire
+    $form = $this->get('form.factory')->create(AdvertEditType::class, $advert);
 
-    if ($request->isMethod('POST')) {
+    if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+      // Inutile de persister ici, Doctrine connait déjà notre annonce
+      $em->flush();
+
       $request->getSession()->getFlashBag()->add('notice', 'Annonce bien modifiée.');
 
       return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
     }
 
     return $this->render('OCPlatformBundle:Advert:edit.html.twig', array(
-      'advert' => $advert
+      'advert' => $advert,
+      'form'   => $form->createView(),
     ));
   }
 
-  public function deleteAction($id)
+  public function deleteAction(Request $request, $id)
   {
     $em = $this->getDoctrine()->getManager();
 
@@ -148,14 +135,23 @@ class AdvertController extends Controller
       throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
     }
 
-    // On boucle sur les catégories de l'annonce pour les supprimer
-    foreach ($advert->getCategories() as $category) {
-      $advert->removeCategory($category);
-    }
+    // On crée un formulaire vide, qui ne contiendra que le champ CSRF
+    // Cela permet de protéger la suppression d'annonce contre cette faille
+    $form = $this->get('form.factory')->create();
 
-    $em->flush();
+    if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+      $em->remove($advert);
+      $em->flush();
+
+      $request->getSession()->getFlashBag()->add('info', "L'annonce a bien été supprimée.");
+
+      return $this->redirectToRoute('oc_platform_home');
+    }
     
-    return $this->render('OCPlatformBundle:Advert:delete.html.twig');
+    return $this->render('OCPlatformBundle:Advert:delete.html.twig', array(
+      'advert' => $advert,
+      'form'   => $form->createView(),
+    ));
   }
 
   public function menuAction($limit)
@@ -172,5 +168,21 @@ class AdvertController extends Controller
     return $this->render('OCPlatformBundle:Advert:menu.html.twig', array(
       'listAdverts' => $listAdverts
     ));
+  }
+
+  // Méthode facultative pour tester la purge
+  public function purgeAction($days, Request $request)
+  {
+    // On récupère notre service
+    $purger = $this->get('oc_platform.purger.advert');
+
+    // On purge les annonces
+    $purger->purge($days);
+
+    // On ajoute un message flash arbitraire
+    $request->getSession()->getFlashBag()->add('info', 'Les annonces plus vieilles que '.$days.' jours ont été purgées.');
+
+    // On redirige vers la page d'accueil
+    return $this->redirectToRoute('oc_platform_home');
   }
 }
