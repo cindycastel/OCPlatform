@@ -1,23 +1,24 @@
 <?php
+// src/OC/PlatformBundle/Entity/Advert.php
 
 namespace OC\PlatformBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-// N'oubliez pas ce use :
 use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\Validator\Constraints as Assert ; 
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use OC\PlatformBundle\Validator\Antiflood;
-// Ajoutez ce use pour le contexte
-
+// On rajoute ce use pour la contrainte :
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+// N'oubliez pas de rajouter ce « use », il définit le namespace pour les annotations de validation
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Table(name="advert")
  * @ORM\Entity(repositoryClass="OC\PlatformBundle\Repository\AdvertRepository")
- * @UniqueEntity(fields="title", message="une annonce existe déjà avec ce titre")
  * @ORM\HasLifecycleCallbacks()
+ *
+ * @UniqueEntity(fields="title", message="Une annonce existe déjà avec ce titre.")
  */
 class Advert
 {
@@ -41,8 +42,8 @@ class Advert
   /**
    * @var string
    *
-   * @ORM\Column(name="title", type="string", length=255)
-   * @Assert\Length(min=10)
+   * Et pour être logique, il faudrait aussi mettre la colonne titre en Unique pour Doctrine :
+   * @ORM\Column(name="title", type="string", length=255, unique=true)
    */
   private $title;
 
@@ -124,6 +125,24 @@ class Advert
   public function decreaseApplication()
   {
     $this->nbApplications--;
+  }
+
+  /**
+   * @Assert\Callback
+   */
+  public function isContentValid(ExecutionContextInterface $context)
+  {
+    $forbiddenWords = array('démotivation', 'abandon');
+
+    // On vérifie que le contenu ne contient pas l'un des mots
+    if (preg_match('#'.implode('|', $forbiddenWords).'#', $this->getContent())) {
+      // La règle est violée, on définit l'erreur
+      $context
+        ->buildViolation('Contenu invalide car il contient un mot interdit.') // message
+        ->atPath('content')                                                   // attribut de l'objet qui est violé
+        ->addViolation() // ceci déclenche l'erreur, ne l'oubliez pas
+      ;
+    }
   }
 
   /**
@@ -322,42 +341,4 @@ class Advert
   {
       return $this->slug;
   }
-
-
-
-
-  /**
-
-   * @Assert\Callback
-
-   */
-
-  public function isContentValid(ExecutionContextInterface $context)
-
-  {
-
-    $forbiddenWords = array('démotivation', 'abandon');
-
-
-    // On vérifie que le contenu ne contient pas l'un des mots
-
-    if (preg_match('#'.implode('|', $forbiddenWords).'#', $this->getContent())) {
-
-      // La règle est violée, on définit l'erreur
-
-      $context
-
-        ->buildViolation('Contenu invalide car il contient un mot interdit.') // message
-
-        ->atPath('content')                                                   // attribut de l'objet qui est violé
-
-        ->addViolation() // ceci déclenche l'erreur, ne l'oubliez pas
-
-      ;
-
-    }
-
-  }
-
-
 }
